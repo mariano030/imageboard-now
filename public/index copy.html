@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <h1> my imagebored</h1>
+
+    <!-- container for view instance -->
+    <div id="main">
+
+        <h2>Hi {{name}}</h2>
+        <h2>{{ 10 * 20}} </h2>
+        <h2>name capitalized {{name.toUpperCase()}} </h2>
+
+        <h3 v-if="seen">Yay you can see me!</h3>
+        <h4 v-else="seen">Yay you can see me!</h4>
+
+
+        <div class="image-box">
+            <div class="image"><img src="{{each.imgUrl}}" alt=""></div>
+            <div class="image-text">{{each.imgText}}</div>
+        </div>
+
+        <!-- // v-on:click="" -->
+        <ul>
+            <li v-for="each in cities" @click="myFunction(each.name)"> 
+                {{ each.name}}, {{each.country}}
+            </li>
+        </ul>
+
+    </div>
+
+    <script src="/js/vue.js"></script>
+    <script src="/js/axios.min.js"></script>
+    <script src="/js/script.js"></script>
+</body>
+</html>

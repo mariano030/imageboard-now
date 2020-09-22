@@ -5,7 +5,9 @@
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
+        "start": "node index.js",
+        "build": "postcss css/tailwind.css -o public/build/tailwind.css"
+
     },
     "engines": {
         "node": "10.15.1"
@@ -13,10 +15,13 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
+        "autoprefixer": "^10.0.0",
         "aws-sdk": "^2.476.0",
         "express": "^4.14.0",
         "multer": "^1.2.0",
+        "postcss-cli": "^7.1.2",
         "spiced-pg": "^1.0.0",
+        "tailwindcss": "^1.8.10",
         "uid-safe": "^2.1.4"
     }
 }
