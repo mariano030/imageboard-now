@@ -2,6 +2,7 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/build/tailwind.css">
 </head>
 <body>
@@ -21,9 +22,9 @@
         <!-- <h3 v-if="seen">Yay you can see me!</h3>
         <h4 v-else="seen">Yay you can see me!</h4> -->
 
-        <div class="container">
-            <div v-for="each in images" class="image-box">
-                <div class="image"><img :src="each.url" alt=""></div>
+        <div class="container w-full grid grid-cols-3 gap-4">
+            <div v-for="each in images" class="image-box col-span-3 sm:col-span-1">
+                <div class="image"><img :src="each.url" class=".object-cover .w-64" alt=""></div>
                 <div class="image-text">{{each.title}}</div>
             </div>
         </div>
