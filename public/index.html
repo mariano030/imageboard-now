@@ -4,12 +4,14 @@
     <title></title>
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/build/tailwind.css">
+    <meta name="viewport" content="width=device-width,user-scalable=no">
 </head>
 <body>
-    <h1> IMAGE, BORED?</h1>
-
+    <h1 @click="checkScrollPosition" class="page-title"> IMAGE, BORED?</h1>
+    
     <!-- container for view instance -->
     <div id="main">
+        <modal v-if="imageId" @close="nullImageId" :image-id="imageId"></modal>
 
         
         <form>
@@ -22,16 +24,17 @@
             
         </form>
         
-        <modal v-if="imageId" @close="nullImageId" :image-id="imageId"></modal>
         <!-- <h3 v-if="seen">Yay you can see me!</h3>
             <h4 v-else="seen">Yay you can see me!</h4> -->
             
-            <div class="container w-full grid grid-cols-3 gap-4">
-                <div v-for="each in images" class="image-box col-span-3 sm:col-span-1"  >
-                    <div @click="openModal(each.id)" class="image"><img :src="each.url" class="img-thumb" alt=""></div>
+            <div class="container w-full grid grid-cols-3 gap-4 origin-center">
+                <div v-for="each in images" class="image-box col-span-3 sm:col-span-1 max-h-full"  >
+                    <div @click="openModal(each.id)" class="image"><img :src="each.url" id="img-thumb" alt=""></div>
                     <div class="image-text">{{each.title}}</div>
+                </div>
             </div>
-        </div>
+            <div v-if="moreButton" class="more-button-container" @click="loadMore"><div class="button more">yaay, load more images</div>
+                </div>
 
         <!-- the : makes the say-greeting dynamic and forces the component to get the data from the main element/parent -->
         <!-- alternativ v-bind:say-greeting -->
@@ -40,43 +43,45 @@
         
         <!-- <my-component v-if="checkForSomething" say-greeting="hello Everyone" @close="closeMe"> </my-component> -->
         
-        <script id="modal-box" type="text/x-template">
-            <div class="center">
-                <div class="mobox">
-                    <div @click="closeModal" class="exit">X</div>
-                    <img :src="url" alt="">
-                    <div class="detail-title">{{title}} </div>
-                    <div class="detail-description">{{description}}d</div>
-                    <div class="detail-user">Uploader: {{username}}</div>
-                    <div class="detail-comments">
-                        <div class="comment-form">
-                            <form action="">
-                                <input type="text" name="comment-username" placeholder="your name" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-                                <input type="text" name="comment-text" placeholder="your comment" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-                                <button type="button" name="comment" label="comment now">comment now</button>
-                            </form>
-                        </div>
-                        <div class="comment-title">Other User's Comments</div>
-                        <div class="img-comment">
-                            <div class="user-comment"><strong>Andrea:</strong> Hey Leyla</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="grayed-out">
-            </div>
-            </div>
-         </script>
-
-         <script id="luca" type="text/x-template">
-            <div>
-                <h1 @click="changeName">This is my first template</h1>
-
-
-                <h2 @click="closeModal">Close Me </h2>
-            </div>
-        </script>
-
     </div>
+    <script id="modal-box" type="text/x-template">
+        <div class="center-x" >
+            <div class="mobox">
+                <!-- <div class="exit" @click="closeModal">X</div> -->
+                <img :src="url" alt="">
+                <div class="detail-container">
+                    <div class="detail-title">{{title}} </div>
+                    <div class="detail-description">{{description}}</div>
+                    <div class="detail-user">uploaded by <strong> {{username}}</strong></div>
+                    <div class="detail-comments">
+                    <div v-if="comments" class="comment-title">Other User's Comments</div>
+                    <div v-for="comment in comments" class="img-comment">
+                        <div class="user-comment"><strong>{{comment.created_at | formatIt(null)}}: {{comment.username}}:</strong> {{comment.text}}</div>
+                    </div>
+                                    <div class="comment-form">
+                                        <form>
+                                            <input v-model="newComment.username" type="text" placeholder="your name" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            <input v-model="newComment.text" type="text" name="comment-text" placeholder="your comment" class=" appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            <input @click="handleCommentClick" type="button" name="comment-text" placeholder="comment now" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            
+                                        </form>
+                                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="grayed-out" @click="closeModal" ></div>
+        </div>
+     </script>
+
+     <script id="luca" type="text/x-template">
+        <div>
+            <h1 @click="changeName">This is my first template</h1>
+
+
+            <h2 @click="closeModal">Close Me </h2>
+        </div>
+    </script>
+
 
     <script src="/js/vue.js"></script>
     <script src="/js/axios.min.js"></script>

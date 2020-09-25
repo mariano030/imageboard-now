@@ -37,15 +37,30 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(
-    // makes req.body accessible
-    express.urlencoded({
-        extended: false,
-    })
-);
+app.use(express.urlencoded({ extended: true })); // with extended:true you can hand over an object to the POST route!!!
+app.use(express.json());
+
+// app.use(
+//     // makes req.body accessible
+//     express.urlencoded({
+//         extended: false,
+//     })
+// );
 
 // initialize images
 let images = [];
+let lastId = 4;
+app.get("/more-images", (req, res) => {
+    console.log("/more-images requested, lastId:", lastId);
+    db.getMoreImages(lastId.id)
+        .then((result) => {
+            console.log("db resutl", result);
+            res.json(result.rows);
+        })
+        .catch((err) =>
+            console.log("an error occured in the more-images route", err)
+        );
+});
 
 app.get("/images", (req, res) => {
     console.log("/images route has been hit!!");
@@ -62,14 +77,42 @@ app.get("/images", (req, res) => {
 app.get("/image/:image_id", (req, res) => {
     console.log("/image/:image_id dynamic route has been hit!!");
     console.log();
-    db.getImageById(req.params.image_id)
+    var modalPromises = [
+        db.getImageById(req.params.image_id),
+        db.getCommentsById(req.params.image_id),
+    ];
+    Promise.all(modalPromises)
         .then((result) => {
-            console.log(result.rows[0]);
-            res.json(result.rows[0]);
+            var resultArr = [result[0].rows[0], result[1].rows];
+            res.json(resultArr);
+            console.log("result from Promise.all", result);
+            console.log("###############");
+            console.log("result[1]", result[1]);
         })
         .catch((err) => console.log(err));
+    // db.getImageById(req.params.image_id)
+    //     .then((result) => {
+    //         console.log(result.rows[0]);
+    //         res.json(result.rows[0]);
+    //     })
+    //     .catch((err) => console.log(err));
     // send response to axios
     // do db request here.
+});
+
+app.post("/comment", (req, res) => {
+    console.log("/comment req.body", req.body);
+    console.log(req.body.username, req.body.text, req.body.imageId);
+    if (!req.body.text) {
+        console.log("no text entered");
+    } else {
+        db.addComment(req.body.username, req.body.text, req.body.imageId)
+            .then((result) => {
+                console.log(result.rows[0]);
+                res.json(result.rows[0]);
+            })
+            .catch((err) => console.log("error posting comment", err));
+    }
 });
 
 // url-encoded is not neede here because of multer

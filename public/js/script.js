@@ -1,37 +1,41 @@
 console.log("you are sane...");
 
 (function () {
-    //all this only runs for the component
-    Vue.component("my-component", {
-        template: "#luca",
-        props: ["sayGreeting"], // this will become a custom attribute! (vue-html-code)
-        // data for components expects a function that retruns an object (not obj directly)
-        data: function () {
-            return {
-                name: "Layla",
-            };
-        },
-        mounted: function () {
-            console.log("props ", this.sayGreeting);
-        },
-        methods: {
-            changeName: function () {
-                this.name = "Masala";
-            },
-            closeModal: function () {
-                console.log("closeMOdal running");
-                // change the parent data
-                console.log("about to emit an event from the component");
-                // emit something to the parent (send info)
-                this.$emit("close");
-            },
-        },
-    });
+    var filter = function (text, length, clamp) {
+        clamp = clamp || "...";
+        var node = document.createElement("div");
+        node.innerHTML = text;
+        var content = node.textContent;
+        return content.length > length
+            ? content.slice(0, length) + clamp
+            : content;
+    };
+    Vue.filter("truncate", filter);
+
+    var formatIt = function (created_at) {
+        var year = created_at.slice(2, 4);
+        var month = created_at.slice(start, end);
+        var day = created_at.slice(5, 6);
+        var time = created_at.slice(10, 14);
+        console.log(created_at);
+        var date = day + "." + month + "." + year;
+        console.log(date);
+        return date;
+    };
+
+    Vue.filter("format", formatIt);
 
     //new fancy component
     Vue.component("modal", {
         template: "#modal-box",
         props: ["imageId"], // this will become a custom attribute! (vue-html-code)
+        watch: {
+            imageId: function () {
+                console.log("the pro p changed!!!", this.imageId);
+                // if we get nothing backfro mserver we should close the modal
+                // e.g. this.id of 300000
+            },
+        },
         // data for components expects a function that retruns an object (not obj directly)
         data: function () {
             return {
@@ -40,6 +44,11 @@ console.log("you are sane...");
                 url: "",
                 username: "",
                 id: "",
+                comments: [],
+                newComment: {
+                    username: "",
+                    text: "",
+                },
             };
         },
         mounted: function (image_id) {
@@ -50,10 +59,14 @@ console.log("you are sane...");
                 .get(requestUrl)
                 .then(function (res) {
                     console.log("axios for single image done!");
-                    self.username = res.data.username;
-                    self.title = res.data.title;
-                    self.description = res.data.description;
-                    self.url = res.data.url;
+                    console.log("RES ", res);
+                    self.username = res.data[0].username;
+                    self.title = res.data[0].title;
+                    self.description = res.data[0].description;
+                    self.url = res.data[0].url;
+                    self.comments = res.data[1];
+                    console.log("res.data[1]: ", res.data[1]);
+                    console.log("self.comments: ", self.comments);
 
                     console.log("res.data", res.data);
                     console.log("res.data.id", res.data.id);
@@ -64,8 +77,36 @@ console.log("you are sane...");
                 });
         },
         methods: {
-            changeName: function () {
-                this.name = "Masala";
+            handleCommentClick: function (e) {
+                e.preventDefault(); // so it DOES NOT send a post request
+                console.log("you clicked the comment submit button");
+                console.log(this.newComment.username);
+                console.log(this.newComment.text);
+                console.log(this.imageId);
+                var newCommentObj = {
+                    username: this.newComment.username,
+                    text: this.newComment.text,
+                    imageId: this.imageId,
+                };
+                this.newComment = newCommentObj;
+                console.log("newComment Object", this.newComment);
+                console.log(newCommentObj);
+                var self = this;
+                axios
+                    .post("/comment", newCommentObj)
+                    .then((result) => {
+                        console.log("RES", result.data);
+                        console.log("before push", self.comments);
+                        self.comments.unshift(result.data);
+                        var commentsParked = self.comments.slice;
+                        console.log("AFTER push", self.comments);
+                        self.newComment.username = "";
+                        self.newComment.text = "";
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    });
+                //     .catch((err) => console.log(err));
             },
             closeModal: function () {
                 console.log("closeMOdal running");
@@ -76,7 +117,8 @@ console.log("you are sane...");
             },
         },
     });
-
+    // ################################### MAIN ################
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     new Vue({
         // el is the element in our html with access to our vue code
         el: "#main",
@@ -88,12 +130,18 @@ console.log("you are sane...");
             username: "",
             file: null,
             checkForSomething: 1, // image id?
-            imageId: "",
+            imageId: null, //Location.hash.slice(1),
             comments: [],
+            moreButton: true,
+            lastLoadedId: 6,
+            lastImageTotal: null,
         }, // data ends
 
         // this runs when our VUE instance renders - cycles
         mounted: function () {
+            // element selection for scroll stuff
+            var main = document.querySelector("#main");
+
             // db query here for images
             console.log("mounted function is runnnnning");
             //properties of DATA get added to this
@@ -107,16 +155,81 @@ console.log("you are sane...");
                     // use self in here instead of this!
                     console.log("THIS inside axios, aka self", self);
                     self.images = res.data;
-                    console.log("####", res.data);
+                    console.log(
+                        "!!! res.data[res.data.length - 1]",
+                        res.data[res.data.length - 1].id
+                    );
+                    self.lastLoadedId = res.data[res.data.length - 1].id;
+                    console.log("####", self.lastLoadedId);
                 })
                 .catch(function (err) {
                     console.log("err in /images", err);
                 });
+
+            console.log("should start checkScrollPosition now");
+            this.checkScrollPosition();
         }, // mounted ends
 
         // functions have to be written here in methods to be available for VUE
         methods: {
-            // can not use ES 6 features with VUE
+            // can NOT use ES 6 features with VUE
+            // checkScrollPosition: function (e) {
+            //     var self = this;
+            //     setInterval(function () {
+            //         console.log("check scroll position");
+            //         main.addEventListener("scroll", function () {
+            //             if (
+            //                 main.scrollTop + main.clientHeight >=
+            //                 main.scrollHeight
+            //             ) {
+            //                 console.log("you are scrolling, are you not?");
+            //                 //loadMore();
+            //             }
+            //         });
+            //         // document.documentElement.offsetHeight
+            //         // console.log("window height: ", window.screen.height);
+            //         // console.log(
+            //         //     "document height: ",
+            //         //     $document.documentElement.offsetHeight
+            //         // );
+            //         // console.log(
+            //         //     "document scroll top: ",
+            //         //     $(document).scrollTop()
+            //         // );
+            //         // if (
+            //         //     $(window).height() + $(document).scrollTop() ===
+            //         //     $(document).height()
+            //         // ) {
+            //         //     // adjust this if block, so that it checks if the user is NEAR the bottom
+            //         //     // maybe check to see if the user is 200px away from the bottom? (you can choose any number, doesn't have to be 200px!)
+            //         //     console.log("at the bottom!!!");
+            //         //     // make the second ajax request, get the results, append to DOM, all that good stuff :)
+            //         // } else {
+            //         //     self.checkScrollPosition();
+            //         // }
+            //     }, 1000);
+            // },
+            loadMore: function (e) {
+                // e.preventDefaults();
+                console.log(
+                    "i would be loading more images if i was a real function, maybe oneday..."
+                );
+                console.log(e);
+                var self = this;
+                var lastLoadedIdObj = {
+                    id: this.lastLoadedId,
+                };
+                axios("/more-images", lastLoadedIdObj)
+                    .then((res) => {
+                        console.log(res);
+                        // last element of res lastId == lastImageTotal ?? no more BUTTON!
+
+                        // ansonsten: push neue images auf images.array
+                    })
+                    .catch((err) =>
+                        console.log("could not get moreImages from db", err)
+                    );
+            },
             nullImageId: function () {
                 console.log("nullImageId running");
                 console.log("u_id", this.imageId);
@@ -156,10 +269,6 @@ console.log("you are sane...");
                 console.log("file:", e.target.files[0]);
                 this.file = e.target.files[0];
             },
-            // here this is still this UNLESS you have an axios in there then it's windows obj again
-            myFunction: function (arg) {
-                console.log("myFunction is running!!!", arg);
-            },
             closeMe: function () {
                 console.log("close me in the parent");
                 //zzz imageId = null;
@@ -185,3 +294,15 @@ console.log("you are sane...");
 // in mounted fn of component 2 axios req. id (from parent) request for image stuff - with same id get comments
 
 // req.body middleware needed - same route - insert of infromation into comments table - RETURNING on db
+
+// render and hide the more button
+
+// sub querry business - find lowest id - don't hardcode
+
+// run subquery with first load - know how much I can still more - logic
+// from more button awnser: is lowest id part of payload from last querry? yes? - hiiiide the button
+
+// location.hash im browser hat hash info aus addresszeile
+// aka url.com/#abschnitt
+
+// v-bind: or : is to connect smth to the variables
