@@ -7,42 +7,46 @@
     <meta name="viewport" content="width=device-width,user-scalable=no">
 </head>
 <body>
-    <h1 @click="checkScrollPosition" class="page-title"> IMAGE, BORED?</h1>
-    
-    <!-- container for view instance -->
-    <div id="main">
-        <modal v-if="imageId" @close="nullImageId" :image-id="imageId"></modal>
+    <div class="center">
+        <h1 @click="checkScrollPosition" class="page-title"> IMAGE, BORED?</h1>
+        
+        <!-- container for view instance -->
+        <div id="main">
+            <modal v-if="imageId" @close="nullImageId" :image-id="imageId"></modal>
 
-        
-        <form>
-            <input v-model="title" type="text" name="title" placeholder="title">
-            <input v-model="description" type="text" name="description" placeholder="description">
-            <input v-model="username" type="text" name="username" placeholder="username">
-            <input @change="handleChange" type="file" name="file" accept="image/*">
-            <button @click="handleClick">submit</button>
-            <!-- <div @click="handleClick" class="button"><img class="icon" src="upload.svg"> upload</div> -->
             
-        </form>
-        
-        <!-- <h3 v-if="seen">Yay you can see me!</h3>
-            <h4 v-else="seen">Yay you can see me!</h4> -->
+            <form>
+                <input v-model="title" type="text" name="title" placeholder="title">
+                <input v-model="description" type="text" name="description" placeholder="description">
+                <input v-model="username" type="text" name="username" placeholder="username">
+                <input @change="handleChange" type="file" name="file" accept="image/*">
+                <button @click="handleClick">submit</button>
+                <!-- <div @click="handleClick" class="button"><img class="icon" src="upload.svg"> upload</div> -->
+                
+            </form>
             
-            <div class="container w-full grid grid-cols-3 gap-4 origin-center">
-                <div v-for="each in images" class="image-box col-span-3 sm:col-span-1 max-h-full"  >
-                    <div @click="openModal(each.id)" class="image"><img :src="each.url" id="img-thumb" alt=""></div>
-                    <div class="image-text">{{each.title}}</div>
+            <!-- <h3 v-if="seen">Yay you can see me!</h3>
+                <h4 v-else="seen">Yay you can see me!</h4> -->
+                
+                <div class="container, w-full grid grid-cols-3 gap-2 origin-center">
+                    <div v-for="each in images" class="image-box col-span-3 sm:col-span-1 max-h-full"  >
+                        <a :href="'#' + each.id" class="fade-up">
+                            <div  class="image"><img :src="each.url" id="img-thumb" alt=""></div>
+                            <div class="image-text">{{each.title}}</div>
+                        </a>
+                    </div>
                 </div>
-            </div>
-            <div v-if="moreButton" class="more-button-container" @click="loadMore"><div class="button more">yaay, load more images</div>
-                </div>
+                <div v-if="moreButton" class="more, fade-slow" @click="loadMore"><div class="button more">nice, load some more images</div>
+                    </div>
 
-        <!-- the : makes the say-greeting dynamic and forces the component to get the data from the main element/parent -->
-        <!-- alternativ v-bind:say-greeting -->
+            <!-- the : makes the say-greeting dynamic and forces the component to get the data from the main element/parent -->
+            <!-- alternativ v-bind:say-greeting -->
+            
         
-       
-        
-        <!-- <my-component v-if="checkForSomething" say-greeting="hello Everyone" @close="closeMe"> </my-component> -->
-        
+            
+            <!-- <my-component v-if="checkForSomething" say-greeting="hello Everyone" @close="closeMe"> </my-component> -->
+            
+        </div>
     </div>
     <script id="modal-box" type="text/x-template">
         <div class="center-x" >

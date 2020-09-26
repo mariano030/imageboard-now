@@ -2,8 +2,14 @@
 
 // infinte scroll
 
-// pagination
+// pagination DONE
 
-// arrows?
+// arrows? started
 
 // delete images?
+
+// drag to upload
+// drag animation
+// upload dunkelkammer
+// form auf bild
+// enter zeichen hinter text

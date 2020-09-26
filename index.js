@@ -52,7 +52,7 @@ let images = [];
 let lastId = 4;
 app.get("/more-images", (req, res) => {
     console.log("/more-images requested, lastId:", lastId);
-    db.getMoreImages(lastId.id)
+    db.getMoreImages(lastId)
         .then((result) => {
             console.log("db resutl", result);
             res.json(result.rows);

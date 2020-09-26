@@ -18,7 +18,6 @@ module.exports.getImages = () => {
 };
 
 module.exports.getMoreImages = (lastId) => {
-    //new
     const q = `
         SELECT *, (
         SELECT id FROM images
@@ -41,15 +40,26 @@ module.exports.getLastImageId = () => {
 };
 
 module.exports.getImageById = (image_id) => {
+    // const q = `
+    // SELECT *
+    // FROM images
+    // WHERE id = $1`;
     const q = `
-    SELECT *
-    FROM images 
-    WHERE id = $1`; // descending id order!
-
+    SELECT *,
+    (SELECT id FROM images WHERE id > $1 LIMIT 1) AS "prevId",
+    (SELECT id FROM images WHERE id > $1 ORDER BY id DESC LIMIT 1) AS "nextId"
+    FROM images
+    WHERE id = $1`;
     const params = [image_id];
     ///
     return db.query(q, params);
 };
+
+// SELECT *,
+// (SELECT id FROM images WHERE id > 1 LIMIT 1) AS "prevId",
+// (SELECT id FROM images WHERE id < 1 ORDER BY id DESC LIMIT 1) AS "nextId"
+// FROM images
+// WHERE id = 1
 
 module.exports.getCommentsById = (image_id) => {
     const q = `

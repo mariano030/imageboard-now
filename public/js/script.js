@@ -52,14 +52,27 @@ console.log("you are sane...");
             };
         },
         mounted: function (image_id) {
-            console.log("props ", this.imageId);
+            // pasted from below - exchange with function
             var self = this;
+            addEventListener("hashchange", function () {
+                console.log("hash has changed...");
+                //self.imageId = null;
+                self.imageId = location.hash.slice(1);
+                console.log("self.imageId in hashchange-mounted", self.imageId);
+                // removed from html @click="openModal(each.id)"
+            });
+
+            console.log("props ", this.imageId);
             var requestUrl = "/image/" + this.imageId;
             axios
                 .get(requestUrl)
                 .then(function (res) {
                     console.log("axios for single image done!");
                     console.log("RES ", res);
+                    console.log(
+                        "ÄÄÄÄÄ result from db res.data[0].nextId",
+                        res.data[1].nextId
+                    );
                     self.username = res.data[0].username;
                     self.title = res.data[0].title;
                     self.description = res.data[0].description;
@@ -74,6 +87,7 @@ console.log("you are sane...");
                 .catch(function (err) {
                     console.log(err);
                     console.log("axios für single image failed");
+                    self.closeModal();
                 });
         },
         methods: {
@@ -130,15 +144,29 @@ console.log("you are sane...");
             username: "",
             file: null,
             checkForSomething: 1, // image id?
-            imageId: null, //Location.hash.slice(1),
+            imageId: location.hash.slice(1), //Location.hash.slice(1),
             comments: [],
             moreButton: true,
-            lastLoadedId: 6,
+            lastLoadedId: null,
             lastImageTotal: null,
         }, // data ends
 
         // this runs when our VUE instance renders - cycles
         mounted: function () {
+            // check for hash# in url
+            //console.log("location.hash", this.location.hash);
+            // if (location.hash) {
+            // } else {
+            //     //nuhfin'
+            // }
+            var self = this;
+            addEventListener("hashchange", function () {
+                console.log("hash has changed...");
+                //self.imageId = null;
+                self.imageId = location.hash.slice(1);
+                console.log(self.imageId);
+            });
+
             // element selection for scroll stuff
             var main = document.querySelector("#main");
 
@@ -211,9 +239,7 @@ console.log("you are sane...");
             // },
             loadMore: function (e) {
                 // e.preventDefaults();
-                console.log(
-                    "i would be loading more images if i was a real function, maybe oneday..."
-                );
+                console.log("loadMore running...");
                 console.log(e);
                 var self = this;
                 var lastLoadedIdObj = {
@@ -221,10 +247,31 @@ console.log("you are sane...");
                 };
                 axios("/more-images", lastLoadedIdObj)
                     .then((res) => {
-                        console.log(res);
+                        console.log(
+                            " res.data[res.data.length - 1].id",
+                            res.data[res.data.length - 1].id
+                        );
+                        console.log(
+                            "res.data[res.data.length - 1].lowerstId: ",
+                            res.data[res.data.length - 1].lowestId
+                        );
+                        if (
+                            res.data[res.data.length - 1].id ==
+                            res.data[res.data.length - 1].lowestId
+                        ) {
+                            console.log(
+                                "letztes geladenes element ist das letzte element in der db!",
+                                "get rid of button now!"
+                            );
+                            self.moreButton = null;
+                        }
+                        console.log("database request result", res);
                         // last element of res lastId == lastImageTotal ?? no more BUTTON!
-
                         // ansonsten: push neue images auf images.array
+                        for (var i = 0; i < res.data.length; i++) {
+                            console.log(res.data[i]);
+                            self.images.push(res.data[i]);
+                        }
                     })
                     .catch((err) =>
                         console.log("could not get moreImages from db", err)
@@ -233,7 +280,9 @@ console.log("you are sane...");
             nullImageId: function () {
                 console.log("nullImageId running");
                 console.log("u_id", this.imageId);
-                this.imageId = null;
+                location.hash = "";
+                //this.imageId = null;
+                // empty the url here and now!
                 console.log("u_id after", this.imageId);
             },
             handleClick: function (e) {
@@ -269,16 +318,12 @@ console.log("you are sane...");
                 console.log("file:", e.target.files[0]);
                 this.file = e.target.files[0];
             },
-            closeMe: function () {
-                console.log("close me in the parent");
-                //zzz imageId = null;
-            },
             openModal: function (id) {
                 console.log("open Modal running");
                 console.log(id);
                 this.imageId = id;
             },
-        }, // mehtods ends here
+        }, // methods ends here
     });
 })();
 
