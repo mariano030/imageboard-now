@@ -1,14 +1,19 @@
 console.log("you are sane...");
 
 (function () {
-    var filter = function (text, length, clamp) {
-        clamp = clamp || "...";
-        var node = document.createElement("div");
-        node.innerHTML = text;
-        var content = node.textContent;
-        return content.length > length
-            ? content.slice(0, length) + clamp
-            : content;
+    var filter = function (created_at) {
+        console.log("created_at", created_at);
+        var year = created_at.slice(2, 4);
+        console.log("year", year);
+        var month = created_at.slice(5, 7);
+        console.log("month", month);
+        var day = created_at.slice(8, 10);
+        console.log("day", day);
+        var time = created_at.slice(11, 16);
+        console.log("time", time);
+        var date = day + "." + month + "." + year + " " + time;
+        console.log("date", date);
+        return date;
     };
     Vue.filter("truncate", filter);
 
@@ -23,7 +28,7 @@ console.log("you are sane...");
         return date;
     };
 
-    Vue.filter("format", formatIt);
+    //Vue.filter("truncate", filter);
 
     //new fancy component
     Vue.component("modal", {
@@ -203,6 +208,7 @@ console.log("you are sane...");
             },
         },
     });
+
     // ################################### MAIN ################
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     new Vue({

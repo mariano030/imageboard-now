@@ -80,12 +80,22 @@
                     <div class="detail-comments">
                     <div v-if="comments" class="comment-title">Other User's Comments</div>
                     <div v-for="comment in comments" class="img-comment">
-                        <div class="user-comment"><strong>{{comment.created_at | formatIt(null)}}: {{comment.username}}:</strong> {{comment.text}}</div>
+                        <div class="user-comment">
+                            <div>
+                                <strong>{{comment.username}}:</strong> 
+
+                            </div>
+                            <div class="user-comment-date">
+                                {{comment.created_at | truncate()}}</div>
+
+                            </div>
+                        <div class="user-comment"> {{comment.text}}</div>
+
                     </div>
                                     <div class="comment-form">
                                         <form>
-                                            <input v-model="newComment.username" type="text" placeholder="your name" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-                                            <input v-model="newComment.text" type="text" name="comment-text" placeholder="your comment" class=" appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            <input v-model="newComment.username" type="text" maxlength="12" placeholder="your name" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            <input v-model="newComment.text" type="text" maxlength="255" name="comment-text" placeholder="your comment" class=" appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                                             <input @click="handleCommentClick" type="button" name="comment-text" placeholder="comment now" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                                             
                                         </form>

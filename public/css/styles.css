@@ -283,6 +283,11 @@ body {
 }
 .user-comment {
 }
+.user-comment-date {
+    margin: 0px 2px 0px 5px;
+    float:right;
+    font-size: x-small;
+}
 
 .comment-form {
     margin: 0px 0px 65px 0px;
