@@ -108,11 +108,27 @@ app.post("/comment", (req, res) => {
     } else {
         db.addComment(req.body.username, req.body.text, req.body.imageId)
             .then((result) => {
-                console.log(result.rows[0]);
+                console.log("comment added to db");
+                console.log("result.rows[0]", result.rows[0]);
                 res.json(result.rows[0]);
             })
             .catch((err) => console.log("error posting comment", err));
     }
+});
+
+app.post("/delete", (req, res) => {
+    console.log("/delete route req.body", req.body);
+    let promiseArray = [
+        db.deleteImageById(req.body.id),
+        db.deleteCommentsByImageId(req.body.id),
+    ];
+    Promise.all(promiseArray)
+        .then((res) => {
+            console.log("delted image & comments with id ", req.body.id);
+        })
+        .catch((err) => {
+            console.log("delete image failed", err);
+        });
 });
 
 // url-encoded is not neede here because of multer

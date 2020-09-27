@@ -10,7 +10,7 @@ module.exports.getImages = () => {
     SELECT *
     FROM images 
     ORDER BY id DESC
-    LIMIT 6`; // descending id order!
+    LIMIT 9`; // descending id order!
 
     const params = [];
     ///
@@ -47,13 +47,62 @@ module.exports.getImageById = (image_id) => {
     const q = `
     SELECT *,
     (SELECT id FROM images WHERE id > $1 LIMIT 1) AS "prevId",
-    (SELECT id FROM images WHERE id > $1 ORDER BY id DESC LIMIT 1) AS "nextId"
+    (SELECT id FROM images WHERE id < $1 ORDER BY id DESC LIMIT 1) AS "nextId"
     FROM images
     WHERE id = $1`;
     const params = [image_id];
     ///
     return db.query(q, params);
 };
+
+// SELECT *,
+// (SELECT id FROM images WHERE id > 10 LIMIT 1) AS "prevId",
+// (SELECT id FROM images WHERE id < 10 ORDER BY id DESC LIMIT 1) AS "nextId"
+// FROM images
+// WHERE id = 10
+
+module.exports.deleteImageById = (image_id) => {
+    const q = `
+DELETE
+FROM images
+WHERE id = $1
+    `;
+    const params = [image_id];
+    return db.query(q, params);
+};
+
+module.exports.deleteCommentsByImageId = (image_id) => {
+    const q = `
+    DELETE
+    FROM comments
+    WHERE image_id = $1
+    `;
+    const params = [image_id];
+    return db.query(q, params);
+};
+
+// DELETE i.*, c.*
+// FROM images c
+// LEFT JOIN comments c ON i.id = c.image_id
+// WHERE i.id = $1
+
+// DELETE T1, T2
+// FROM T1
+// INNER JOIN T2 ON T1.key = T2.key
+// WHERE condition;
+
+// DELETE FROM images, comments INNER JOIN comments
+// WHERE images.id = comments.image_id and images.id = '3'
+
+// DELETE images, comments FROM images INNER JOIN comments
+// WHERE images.id = comments.image_id and images.id = '3'
+// DELETE messages , usersmessages  FROM messages  INNER JOIN usersmessages
+// WHERE messages.messageid= usersmessages.messageid and messages.messageid = '1'
+
+// DELETE
+// FROM images
+// WHERE id = 2;
+// DELETE FROM comments WHERE image_id =2;
 
 // SELECT *,
 // (SELECT id FROM images WHERE id > 1 LIMIT 1) AS "prevId",

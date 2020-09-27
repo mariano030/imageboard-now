@@ -12,7 +12,7 @@
         
         <!-- container for view instance -->
         <div id="main">
-            <modal v-if="imageId" @close="nullImageId" :image-id="imageId"></modal>
+            <modal v-if="imageId && imageId != 'admin'" @close="nullImageId" :image-id="imageId"></modal>
 
             
             <form>
@@ -28,12 +28,23 @@
             <!-- <h3 v-if="seen">Yay you can see me!</h3>
                 <h4 v-else="seen">Yay you can see me!</h4> -->
                 
-                <div class="container, w-full grid grid-cols-3 gap-2 origin-center">
-                    <div v-for="each in images" class="image-box col-span-3 sm:col-span-1 max-h-full"  >
-                        <a :href="'#' + each.id" class="fade-up">
-                            <div  class="image"><img :src="each.url" id="img-thumb" alt=""></div>
-                            <div class="image-text">{{each.title}}</div>
+                <div class="container, w-full grid grid-cols-3 gap-2 origin-center"  @click="toggleConfirmDelete(null)">
+                    <div v-for="each in images"  class="image-box col-span-3 sm:col-span-1 max-h-full"  >
+                        <div>
+                        <a :href="'#' + each.id" class="fade-slow" :id="each.id" >
+                            
+                            <div  class="image" >
+                                    <img :src="each.url" id="img-thumb" alt="" :class="{current:each == current}"   @click="current = null">
+                            <div class="image-title">{{each.title}}</div>
                         </a>
+                                <div v-if="admin" class="image-delete" :id="imageId" @click="current = each || toggleConfirmDelete()" :class="{invisible: each == current}" >
+                                    <img src="assets/icon-delete.png" class="icon">
+                                </div>
+                                <div v-if="current == each" class="image-delete-confirm"  @click="toggleConfirmDelete(current)">
+                                    <img src="assets/icon-delete-confirm.png">
+                                </div>
+                    
+                      </div>
                     </div>
                 </div>
                 <div v-if="moreButton" class="more, fade-slow" @click="loadMore"><div class="button more">nice, load some more images</div>
@@ -52,7 +63,16 @@
         <div class="center-x" >
             <div class="mobox">
                 <!-- <div class="exit" @click="closeModal">X</div> -->
-                <img :src="url" alt="">
+                <div class="relative">
+                    <img :src="url" alt="">
+                    <a v-if="prevId" :href="'#' + prevId" class="prev-container fade-up" @click="closeModal">
+                        <div class="arrow-left"><img src="assets/icon-left-arrow.png" alt="previous"> </div>
+                    </a>
+                    <!-- {{nextId}} {{prevId}} -->
+                    <a v-if="nextId"  :href="'#' + nextId" class="prev-container fade-up" @click="closeModal">
+                        <div class="arrow-right"><img src="assets/icon-right-arrow.png" alt="next"></div>
+                    </a>
+                 </div>   
                 <div class="detail-container">
                     <div class="detail-title">{{title}} </div>
                     <div class="detail-description">{{description}}</div>

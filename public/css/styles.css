@@ -23,10 +23,12 @@ body {
 
 .container {
     display: flex;
+
     border-top-right-radius: 25px;
 }
 
 .image-box {
+    position: relative;
     border-top-right-radius: 25px;
     margin: 25px;
     background-color: white;
@@ -35,12 +37,19 @@ body {
     border-top-left-radius: 10px;
 }
 
-.image-text {
+.image-title {
     font-size: 0.7em;
     background-color: #f8f8f8;
 }
 
 #img-thumb {
+    width: 100%;
+    height: 320px;
+    object-fit: cover;
+}
+
+.img-thumb-transp {
+    opacity: 50%;
     width: 100%;
     height: 320px;
     object-fit: cover;
@@ -92,6 +101,101 @@ body {
     border-bottom-right-radius: 25px;
 }
 
+.image-delete {
+    z-index: 3;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-50%, 50%);
+    cursor: pointer;
+}
+
+.image-delete-confirm {
+    z-index: 3;
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate(-50%, 50%);
+    cursor: pointer;
+    height: 128px;
+    width: 50%;
+    opacity: 70%;
+
+}
+
+
+
+/* .image-confirm-delete {
+    z-index: 4;
+    position: absolute;
+    right: 20%;
+    top: 50%;
+    /* transform: translate(-50%, 50%); */
+/* cursor: pointer;
+    font-size: 8em;
+    color: white;
+} */
+*/
+
+/* .next-container {
+    height: 30%;
+}
+ */
+.prev-container {
+    height: 30%;
+}
+
+.arrow-left {
+    opacity: 0%;
+    z-index: 20;
+    /* height: 128px; */
+    height: 64;
+    width: 128px;
+    position: absolute;
+    transform: translateX(10%);
+    top: 50%;
+    left: 0px;
+    /* opacity: 15%; */
+    filter: invert(100%);
+}
+
+.arrow-left:hover {
+    opacity: 30%;
+}
+
+.arrow-right {
+    opacity: 0%;
+    z-index: 20;
+    height: 128px;
+    width: 128px;
+    position: absolute;
+    transform: translateX(-10%);
+    top: 50%;
+    right: 0px;
+    /* opacity: 15%; */
+    filter: invert(100%);
+}
+
+.current {
+    opacity: 35%;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.confirm {
+    /* filter: invert(100%);  */
+    height: 100%;
+    width: 35%;
+    opacity
+}
+
+
+
+.arrow-right:hover {
+    opacity: 30%;
+}
 .grayed-out {
     position: fixed;
     top: 0px;
@@ -100,13 +204,18 @@ body {
     opacity: 35%;
     height: 100%;
     width: 100%;
+    filter: invert(100%);
+}
+
+.icon {
+    height: 32px;
 }
 
 .mobox {
     overflow-y: hidden;
     /* padding: 20px; */
-    position: sticky;
-    margin-top: 0.5em;
+    position: relative;
+    /* margin-top: 0.1em; */
     margin-bottom: 0.8em;
     /* top: 50%; */
     left: 50%;
@@ -126,7 +235,7 @@ body {
 .mobox {
     position: fixed;
     display: block;
-    top: 3%;
+    top: 1%;
     left: 50%;
     width: 90vw;
     height: 100%;
@@ -134,6 +243,10 @@ body {
     /* margin: -300px 0 0 0; */
     /* height: 200px;
     width: 500px; */
+}
+
+.relative {
+    position: relative;
 }
 
 .mobox img {
@@ -202,7 +315,14 @@ body {
     align-items: center;
 }
 
+.transp {
+    opacity: 50%;
+}
+
 .more {
+    display: flex;
+    justify-content: center;
+    width: 100%;
     cursor: pointer;
     font-weight: 500;
     color: #6e6e6e;
