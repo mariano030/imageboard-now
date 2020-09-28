@@ -302,43 +302,6 @@ console.log("you are sane...");
         methods: {
             // can NOT use ES 6 features with VUE
 
-            // scroll test stuff
-            // checkScrollPosition: function (e) {
-            //     var self = this;
-            //     setInterval(function () {
-            //         console.log("check scroll position");
-            //         main.addEventListener("scroll", function () {
-            //             if (
-            //                 main.scrollTop + main.clientHeight >=
-            //                 main.scrollHeight
-            //             ) {
-            //                 console.log("you are scrolling, are you not?");
-            //                 //loadMore();
-            //             }
-            //         });
-            //         // document.documentElement.offsetHeight
-            //         // console.log("window height: ", window.screen.height);
-            //         // console.log(
-            //         //     "document height: ",
-            //         //     $document.documentElement.offsetHeight
-            //         // );
-            //         // console.log(
-            //         //     "document scroll top: ",
-            //         //     $(document).scrollTop()
-            //         // );
-            //         // if (
-            //         //     $(window).height() + $(document).scrollTop() ===
-            //         //     $(document).height()
-            //         // ) {
-            //         //     // adjust this if block, so that it checks if the user is NEAR the bottom
-            //         //     // maybe check to see if the user is 200px away from the bottom? (you can choose any number, doesn't have to be 200px!)
-            //         //     console.log("at the bottom!!!");
-            //         //     // make the second ajax request, get the results, append to DOM, all that good stuff :)
-            //         // } else {
-            //         //     self.checkScrollPosition();
-            //         // }
-            //     }, 1000);
-            // },
             toggleConfirmDelete: function (current) {
                 console.log("fn main.toggleConfirmDelete running");
                 console.log("current", this.current, current);
@@ -354,10 +317,40 @@ console.log("you are sane...");
                 }
             },
             deleteImage: function (current) {
-                console.log("fn main.delete image - current", current);
+                console.log("fn main.delete image - current", this.current);
+                console.log("this.images", this.images);
+                //var index = this.images.indexOf({ id: current });
+
+                // var index = this.images.findIndex(function (image) {
+                //     return image.id == current;
+                // });
+                // for (var i = 0; i < this.images.length; i++) {
+                //     if (this.images[i].id == this.current) {
+                //         console.log("index found");
+                //         var index = i;
+                //     }
+                // }
+                var self = this;
+
+                console.log("axios starting");
                 axios
                     .post("/delete", current)
-                    .then((res) => console.log(res))
+                    .then((result) => {
+                        console.log("delte successful - about to remove elme");
+                        console.log("result", result);
+                        console.log("res");
+                        console.log("self.images before filter", self.images);
+                        console.log("current", current);
+
+                        var parkedImages = self.images;
+                        self.images = parkedImages.filter(function (image) {
+                            console.log("current.id", current.id);
+                            console.log("images.id: ", image.id);
+                            return current.id != image.id;
+                        });
+                        console.log("self.images after filter", self.images);
+                        //self.images = updatedImages;
+                    })
                     .catch((err) => {
                         console.log("error in delete route", err);
                     });
@@ -370,7 +363,9 @@ console.log("you are sane...");
                 var lastLoadedIdObj = {
                     id: this.lastLoadedId,
                 };
-                axios("/more-images", lastLoadedIdObj)
+                console.log("lastLoadedIdObj", lastLoadedIdObj);
+                axios
+                    .get("/more-images", lastLoadedIdObj)
                     .then((res) => {
                         console.log(
                             " res.data[res.data.length - 1].id",

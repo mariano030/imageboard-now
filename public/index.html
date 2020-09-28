@@ -8,27 +8,39 @@
 </head>
 <body>
     <div class="center">
-        <h1 @click="checkScrollPosition" class="page-title"> IMAGE, BORED?</h1>
-        
+        <a href="#"> 
+            <h1 @click="checkScrollPosition" class="page-title"> apocalypse now imageboard</h1>
+        </a>
         <!-- container for view instance -->
         <div id="main">
             <modal v-if="imageId && imageId != 'admin'" @close="nullImageId" :image-id="imageId"></modal>
 
-            
-            <form>
-                <input v-model="title" type="text" name="title" placeholder="title">
-                <input v-model="description" type="text" name="description" placeholder="description">
-                <input v-model="username" type="text" name="username" placeholder="username">
-                <input @change="handleChange" type="file" name="file" accept="image/*">
-                <button @click="handleClick">submit</button>
-                <!-- <div @click="handleClick" class="button"><img class="icon" src="upload.svg"> upload</div> -->
-                
-            </form>
-            
+            <div class="center">
+
+                <form class="fade-extra-slow ">
+                    <input v-model="title" type="text" name="title" placeholder="your title" class="m-1 w-56 border-2 bg-transparent hover:border-red-600 text-gray-300 font-semibold hover:text-white hover:text-red-600 hover:placeholder-color-red-600 py-2 px-4  border-gray-200 hover:border-transparent rounded">
+                    <input v-model="description" type="text" name="description" placeholder="your description" class="m-1 w-56 border-2 bg-transparent hover:border-red-600 text-gray-300 font-semibold  hover:text-red-600 py-2 px-4  border-gray-200 hover:border-transparent rounded">
+                    <input @change="handleChange" type="file" name="file" accept="image/*" class=" m-1 w-56 border-2 bg-transparent hover:border-red-600 text-gray-300  font-semibold  py-2 px-4  border-gray-200 hover:border-transparent rounded"> 
+                    <input v-model="username" type="text" name="username" placeholder="your username" class="browse m-1 w-56 border-2 bg-transparent hover:border-red-600 text-gray-300 hover:text-red-600 font-semibold hover:text-white py-2 px-4  border-gray-200 hover:border-transparent rounded">
+                    <button @click="handleClick" class="m-1 w-56 border-2 bg-transparent hover:bg-red-600 text-gray-300 font-semibold hover:text-white py-2 px-4  border-gray-200 hover:border-transparent rounded">upload your image</button>
+                    <!-- <div @click="handleClick" class="button"><img class="icon" src="upload.svg"> upload</div> -->
+                    
+                </form>
+            </div>
             <!-- <h3 v-if="seen">Yay you can see me!</h3>
                 <h4 v-else="seen">Yay you can see me!</h4> -->
                 
-                <div class="container, w-full grid grid-cols-3 gap-2 origin-center"  @click="toggleConfirmDelete(null)">
+                
+                <div class="container, w-full grid grid-cols-3 gap-2 origin-center">
+                    <!-- static content -->
+                        <!-- <div v-if="images" class="image-box col-span-3 sm:col-span-1 max-h-full"  >
+                            <div>
+                                <div  class="image" >
+                                        <img src="https://s3.amazonaws.com/images-for-imageboard/FynWtEvKriQVmkOOPjmrvZePCoMOiYS0.jpg" id="img-thumb" alt="" >
+                                <div class="image-title">drag & drop to upload a picture</div>
+                            </div>
+                        </div> -->
+                    <!-- static content end -->
                     <div v-for="each in images"  class="image-box col-span-3 sm:col-span-1 max-h-full"  >
                         <div>
                         <a :href="'#' + each.id" class="fade-slow" :id="each.id" >
@@ -47,8 +59,11 @@
                       </div>
                     </div>
                 </div>
-                <div v-if="moreButton" class="more, fade-slow" @click="loadMore"><div class="button more">nice, load some more images</div>
-                    </div>
+
+            </div>
+                            <div v-if="moreButton" class="more button center-x" @click="loadMore">
+                    <div  class="more, fade-slow" ><div >nice, load some more images</div>
+                </div>
 
             <!-- the : makes the say-greeting dynamic and forces the component to get the data from the main element/parent -->
             <!-- alternativ v-bind:say-greeting -->
@@ -64,7 +79,7 @@
             <div class="mobox">
                 <!-- <div class="exit" @click="closeModal">X</div> -->
                 <div class="relative">
-                    <img :src="url" alt="">
+                    <img :src="url" alt="" class="detail-image">
                     <a v-if="prevId" :href="'#' + prevId" class="prev-container fade-up" @click="closeModal">
                         <div class="arrow-left"><img src="assets/icon-left-arrow.png" alt="previous"> </div>
                     </a>
@@ -78,7 +93,7 @@
                     <div class="detail-description">{{description}}</div>
                     <div class="detail-user">uploaded by <strong> {{username}}</strong></div>
                     <div class="detail-comments">
-                    <div v-if="comments" class="comment-title">Other User's Comments</div>
+                    <div v-if="comments" class="comment-title">Comment section:</div>
                     <div v-for="comment in comments" class="img-comment">
                         <div class="user-comment">
                             <div>
@@ -94,27 +109,21 @@
                     </div>
                                     <div class="comment-form">
                                         <form>
-                                            <input v-model="newComment.username" type="text" maxlength="12" placeholder="your name" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-                                            <input v-model="newComment.text" type="text" maxlength="255" name="comment-text" placeholder="your comment" class=" appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
-                                            <input @click="handleCommentClick" type="button" name="comment-text" placeholder="comment now" class="appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                            <input v-model="newComment.text" type="text" maxlength="255" name="comment-text" placeholder="your comment" class=" appearance-none border-2 border-gray-200 hover:border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-400 mx-1">
+                                            <div class="flex-row">
+                                                <input v-model="newComment.username" type="text" maxlength="20" placeholder="your name" class="appearance-none border-2 border-gray-200 hover:border-gray-300 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-gray-400 mx-1">
+                                                <button @click="handleCommentClick" type="button" label="save comment" name="comment-text" placeholder="comment now" class="w-56 border-2 bg-transparent hover:bg-red-600 text-gray-300 font-semibold hover:text-white py-2 px-4  border-gray-200 hover:border-transparent rounded">save comment</button>
+                                            
+                                            </div>
                                             
                                         </form>
                                     </div>
                 </div>
                 </div>
             </div>
-            <div class="grayed-out" @click="closeModal" ></div>
+            <div class="grayed-out" @click="closeModal"></div>
         </div>
      </script>
-
-     <script id="luca" type="text/x-template">
-        <div>
-            <h1 @click="changeName">This is my first template</h1>
-
-
-            <h2 @click="closeModal">Close Me </h2>
-        </div>
-    </script>
 
 
     <script src="/js/vue.js"></script>

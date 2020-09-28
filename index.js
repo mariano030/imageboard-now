@@ -8,6 +8,7 @@ const uidSafe = require("uid-safe");
 const path = require("path");
 
 const s3 = require("./s3");
+const bodyParser = require("body-parser");
 
 const config = require("./config");
 
@@ -36,8 +37,9 @@ app.use((req, res, next) => {
     console.log(req.method, req.url);
     next();
 });
+app.use(bodyParser.urlencoded({ extended: true })); // with extended:true you can hand over an object to the POST route (or any)!!!
+// the extended: true precises that the req.body object will contain values of any type instead of just strings.
 
-app.use(express.urlencoded({ extended: true })); // with extended:true you can hand over an object to the POST route!!!
 app.use(express.json());
 
 // app.use(
@@ -49,8 +51,9 @@ app.use(express.json());
 
 // initialize images
 let images = [];
-let lastId = 4;
+let lastId = 7; // <<<<<<<<<<<<<<<<<< ###################################################
 app.get("/more-images", (req, res) => {
+    console.log("REQ BBBBOOOOOOODYYYYY", req.body.id);
     console.log("/more-images requested, lastId:", lastId);
     db.getMoreImages(lastId)
         .then((result) => {
@@ -118,13 +121,17 @@ app.post("/comment", (req, res) => {
 
 app.post("/delete", (req, res) => {
     console.log("/delete route req.body", req.body);
-    let promiseArray = [
-        db.deleteImageById(req.body.id),
-        db.deleteCommentsByImageId(req.body.id),
-    ];
-    Promise.all(promiseArray)
-        .then((res) => {
-            console.log("delted image & comments with id ", req.body.id);
+    db.deleteCommentsByImageId(req.body.id) //
+        .then((result) => {
+            console.log("comments delete successful", res);
+            db.deleteImageById(req.body.id)
+                .then((result) => {
+                    console.log("image delete successful", res);
+                    res.json(result.rows);
+                })
+                .catch((err) => {
+                    console.log("delete comments failed", err);
+                });
         })
         .catch((err) => {
             console.log("delete image failed", err);

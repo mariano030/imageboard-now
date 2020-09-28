@@ -13,7 +13,8 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
         Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
     font-size: x-large;
-    font-weight: 600;
+    font-weight: 300;
+    margin-bottom:10px;
 }
 
 .main {
@@ -40,6 +41,8 @@ body {
 .image-title {
     font-size: 0.7em;
     background-color: #f8f8f8;
+    padding: 0px 0px 0px 3px;
+    color: #A5A5A5;
 }
 
 #img-thumb {
@@ -67,6 +70,10 @@ body {
     width: 100%;
     height: 100%;
     background-color: azure;
+}
+
+detail-image{
+    height: 90vh;
 }
 
 .exit {
@@ -115,7 +122,7 @@ body {
     position: absolute;
     right: 0;
     top: 0;
-    transform: translate(-50%, 50%);
+    transform: translate(-50%, 40%);
     cursor: pointer;
     height: 128px;
     width: 50%;
@@ -196,7 +203,9 @@ body {
 .arrow-right:hover {
     opacity: 30%;
 }
+
 .grayed-out {
+    z-index:2;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -204,7 +213,7 @@ body {
     opacity: 35%;
     height: 100%;
     width: 100%;
-    filter: invert(100%);
+
 }
 
 .icon {
@@ -280,6 +289,8 @@ body {
 
     width: 100%;
     font-size: 0.6em;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+
 }
 .user-comment {
 }
@@ -320,11 +331,21 @@ body {
     align-items: center;
 }
 
+.browse {
+    -webkit-appearance: none;
+}
+
 .transp {
     opacity: 50%;
 }
 
+.flex-row {
+    display:flex;
+    justify-content: space-evenly;
+}
+
 .more {
+    z-index: 0;
     display: flex;
     justify-content: center;
     width: 100%;
@@ -354,11 +375,19 @@ body {
 }
 
 .fade-slow {
-    -webkit-animation: fadein 16s; /* Safari, Chrome and Opera > 12.1 */
-    -moz-animation: fadein 16s; /* Firefox < 16 */
-    -ms-animation: fadein 16s; /* Internet Explorer */
-    -o-animation: fadein 16s; /* Opera < 12.1 */
-    animation: fadein 16s;
+    -webkit-animation: fadein 4s ease-in; /* Safari, Chrome and Opera > 12.1 */
+    -moz-animation: fadein 4s ease-in; /* Firefox < 16 */
+    -ms-animation: fadein 4s ease-in; /* Internet Explorer */
+    -o-animation: fadein 4s ease-in; /* Opera < 12.1 */
+    animation: fadein 4s ease-in;
+}
+
+.fade-extra-slow {
+    -webkit-animation: fadein 14s ease-in; /* Safari, Chrome and Opera > 12.1 */
+    -moz-animation: fadein 14s ease-in; /* Firefox < 16 */
+    -ms-animation: fadein 14s ease-in; /* Internet Explorer */
+    -o-animation: fadein 14s ease-in; /* Opera < 12.1 */
+    animation: fadein 14s ease-in;
 }
 
 @keyframes fadein {
@@ -366,6 +395,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -376,6 +411,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -386,6 +427,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -396,6 +443,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -415,6 +468,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -425,6 +484,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -435,6 +500,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -445,6 +516,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }
@@ -455,6 +532,12 @@ body {
         opacity: 0;
     }
     to {
+        opacity: 0;
+    }
+        to {
+        opacity: 0.3;
+    }
+        to {
         opacity: 1;
     }
 }

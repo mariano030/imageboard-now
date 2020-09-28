@@ -20,3 +20,9 @@
 // pause beim tippen abwarten, weitertippen erlauben
 
 // media querry
+
+// GET MORE IMAGES NOT WORKING
+// can't handover obj to get route
+
+// DELETE NOT FINALIZED
+// how to remove the item (first find it?) from images[array]
